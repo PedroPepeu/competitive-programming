@@ -46,7 +46,7 @@ int A(vector<vector<int>> g) {
 			break;
 		}
 
-		
+				
 	}
 }
 

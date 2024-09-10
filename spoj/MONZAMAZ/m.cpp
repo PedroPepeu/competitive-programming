@@ -1,36 +1,39 @@
 #include <bits/stdc++.h>
+#include <queue>
 
 #define pb push_back
 #define mk make_pair
 
 using namespace std;
 
-typedef pii pair<int, int>
+typedef pair<int, int> pii;
 
-int bfs(vector<pii> grapth, int n) {
+int search(pii begin, vector<pii> map) {
+    vector<int> vist (map.size(), 0);
+
     queue<pii> q;
-    vector<int> v (n,0);
+    q.push(begin);
+    while(!q.empty()) {
+        int x = q.front().first;
+        int y = q.front().second;
+        q.pop();
 
-    set<int, pair<int, int>> s;
+        for(auto &xC : map) {
+            float dist = sqrt((x-xC.first)*(x-xC.first)+(y-xC.second)*(y-xC.second));
+        }
+    }
 }
 
 int main() {
     int n;
-    while(scanf("%d", &n) && n != 0) {
-        vector<pii> v;
+    pii begin;
+    scanf("%d %d", &begin.first, & begin.second);
+    vector<pii> v (n-1);
+    for(int i = 0; i < n-1; i++) scanf("%d %d", &v[i].first, &v[i].second);
 
-        int x, y;
-        for(int i = 0; i < n; i++) {
-            scanf("%d %d", &x, &y);
-            v.pb(mk(x, y));
-        }
-
-        if(bfs(v, n)) {
-            printf("All stations are reachable.\n");
-        } else {
-            printf("There are stations that are unreachable.\n");
-        }
+    if(search(begin, v)) {
+        printf("All stations are reacheble.\n");
+    } else {
+        printf("There are stations that are unreachable\n");
     }
-
-    return 0;
 }
