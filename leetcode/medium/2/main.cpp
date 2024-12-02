@@ -1,16 +1,73 @@
-#include "test.h"
-#include <bits/stdc++.h>
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    pair<int, int> restSum(int sum) {
+        if(sum < 10) return make_pair(0, sum);
 
-using namespace std;
+        return make_pair((sum/10)%10,sum%10);
+    }
 
-int main() {
-    Test_c test;
+    ListNode* makeLinkedList(ListNode* node, queue<ListNode*> sl1, queue<ListNode*> sl2, int rest) {
+        if(node == NULL) node = new ListNode();
 
-    test.add_0_with_0_answer_0();
-    test.add_2_4_3_with_5_6_4_answer_7_0_8();
-    test.add_9_9_9_9_9_9_9_with_9_9_9_9_answer_8_9_9_9_0_0_0_1();
+        pair<int, int> pii;
 
-    cout << "All tests have passed" << endl;
+        if((rest == 0) && (sl1.empty()) && (sl2.empty())) {
+            return NULL;
+        }
+        else if((sl1.empty()) && (sl2.empty())) {
+            node->val = rest;
+            return node;
+        } 
+        else if(sl1.empty()) {
+            pii = restSum(rest+sl2.front()->val);
+            sl2.pop();
+        } // pii -> (rest, add to this node)
+        else if(sl2.empty()) {
+            pii = restSum(rest+sl1.front()->val);
+            sl1.pop();
+        } // pii -> (rest, add to this node)
+        else {
+            pii = restSum(rest+sl1.front()->val+sl2.front()->val);
+            sl1.pop();
+            sl2.pop();
+        }
 
-    return 0;
-}
+        node->val = pii.second;
+        node->next = makeLinkedList(node->next, sl1, sl2, pii.first);
+        return node;
+    }
+
+    ListNode* queueSum(queue<ListNode*> sl1, queue<ListNode*> sl2) {
+        ListNode* node = new ListNode();
+        node = makeLinkedList(node, sl1, sl2, 0);
+        return node;
+    }
+
+    queue<ListNode*> listqueue(ListNode* l) {
+        queue<ListNode*> s;
+
+        while(l!=NULL) {
+            s.push(l);
+            l = l->next;
+        }
+
+        return s;
+    }
+
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        queue<ListNode*> sl1 = listqueue(l1);
+        queue<ListNode*> sl2 = listqueue(l2);
+        
+        return queueSum(sl1, sl2);
+    }
+};
